@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Controle de Celulares</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .login-box {
+            max-width: 400px;
+            margin: 100px auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .erro {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container login-box">
+
+    <div class="card">
+
+        <h1>📱 Controle de Celulares</h1>
+
+        <label>Usuário</label>
+        <input type="text" id="usuario">
+
+        <label>Senha</label>
+        <input type="password" id="senha">
+
+        <button class="salvar" style="width:100%; margin-top:20px;"
+                onclick="entrar()">
+            Entrar
+        </button>
+
+        <p class="erro" id="erro"></p>
+
+    </div>
+
+</div>
+
+<script>
+
+function entrar() {
+
+    let usuario =
+        document.getElementById("usuario").value;
+
+    let senha =
+        document.getElementById("senha").value;
+
+    // Usuário e senha iniciais
+
+    if (usuario === "admin" && senha === "1234") {
+
+        localStorage.setItem("logado", "sim");
+
+        window.location.href = "index.html";
+
+    } else {
+
+        document.getElementById("erro").innerText =
+            "Usuário ou senha inválidos.";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

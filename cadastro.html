@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Celulares</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topo">
+
+    <div class="menu">
+        <a href="index.html" style="text-decoration:none;color:black;">⬅</a>
+    </div>
+
+    <h2>Cadastro</h2>
+
+    <div></div>
+
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <label>IMEI *</label>
+        <input type="text" id="imei" placeholder="Digite o IMEI">
+
+        <label>Nome *</label>
+        <input type="text" id="nome" placeholder="Nome do colaborador">
+
+        <label>Cargo *</label>
+        <input type="text" id="cargo" placeholder="Cargo">
+
+        <label>Empresa *</label>
+        <input type="text" id="empresa" placeholder="Empresa">
+
+        <div class="btns">
+
+            <button class="cancelar" onclick="limpar()">
+                Limpar
+            </button>
+
+            <button class="salvar" onclick="salvarCadastro()">
+                Salvar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+if (localStorage.getItem("logado") !== "sim") {
+    window.location.href = "login.html";
+}
+function limpar() {
+
+    document.getElementById("imei").value = "";
+    document.getElementById("nome").value = "";
+    document.getElementById("cargo").value = "";
+    document.getElementById("empresa").value = "";
+
+}
+
+function salvarCadastro() {
+
+    let imei =
+        document.getElementById("imei").value;
+
+
+    let nome =
+        document.getElementById("nome").value;
+
+    let cargo =
+        document.getElementById("cargo").value;
+
+    let empresa =
+        document.getElementById("empresa").value;
+
+    if (!imei || !nome || !cargo || !empresa) {
+
+        alert("Preencha todos os campos obrigatórios.");
+        return;
+
+    }
+
+    let cadastros =
+        JSON.parse(localStorage.getItem("cadastros")) || [];
+
+    let existe =
+        cadastros.find(c => c.imei === imei);
+
+    if (existe) {
+
+        alert("Este IMEI já está cadastrado.");
+        return;
+
+    }
+
+    cadastros.push({
+
+        imei,
+        nome,
+        cargo,
+        empresa
+
+    });
+
+    localStorage.setItem(
+        "cadastros",
+        JSON.stringify(cadastros)
+    );
+
+    alert("Cadastro salvo com sucesso!");
+
+    limpar();
+}
+
+</script>
+
+</body>
+</html>

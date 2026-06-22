@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topo">
+
+    <div class="menu">
+        <a href="index.html"
+           style="text-decoration:none;color:black;">
+           ⬅
+        </a>
+    </div>
+
+    <h2>Histórico</h2>
+
+    <div></div>
+
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <input
+            type="text"
+            id="pesquisa"
+            placeholder="Pesquisar por nome, empresa ou IMEI"
+            onkeyup="mostrarHistorico()">
+
+    </div>
+
+    <div id="lista"></div>
+
+</div>
+
+<script>
+if (localStorage.getItem("logado") !== "sim") {
+    window.location.href = "login.html";
+}
+function excluirRegistro(indice){
+
+    if(!confirm("Deseja excluir este registro?")){
+        return;
+    }
+
+    let registros =
+        JSON.parse(localStorage.getItem("registros")) || [];
+
+    registros.splice(indice,1);
+
+    localStorage.setItem(
+        "registros",
+        JSON.stringify(registros)
+    );
+
+    mostrarHistorico();
+}
+
+function mostrarHistorico(){
+
+    let busca =
+        document.getElementById("pesquisa")
+        .value.toLowerCase();
+
+    let registros =
+        JSON.parse(localStorage.getItem("registros")) || [];
+
+    let lista =
+        document.getElementById("lista");
+
+    lista.innerHTML = "";
+
+    registros
+        .slice()
+        .reverse()
+        .forEach((registro, indice) => {
+
+            let texto =
+                `${registro.nome}
+                 ${registro.empresa}
+                 ${registro.imei}`
+                 .toLowerCase();
+
+            if(texto.includes(busca)){
+
+                lista.innerHTML += `
+
+                <div class="card">
+
+                    <h3>${registro.tipo}</h3>
+
+                    <p><strong>Nome:</strong>
+                    ${registro.nome}</p>
+
+                    <p><strong>Empresa:</strong>
+                    ${registro.empresa}</p>
+
+                    <p><strong>IMEI:</strong>
+                    ${registro.imei}</p>
+
+                    <p><strong>Data/Hora:</strong>
+                    ${registro.hora}</p>
+
+                    <button class="saida"
+                        onclick="excluirRegistro(${registros.length - 1 - indice})">
+
+                        Excluir
+
+                    </button>
+
+                </div>
+
+                `;
+
+            }
+
+        });
+
+}
+
+mostrarHistorico();
+
+</script>
+
+</body>
+</html>

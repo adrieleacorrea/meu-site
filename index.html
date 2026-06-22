@@ -1,37 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Meu Primeiro Site</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Celulares</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<div class="card">
 
-    <h1>Adriele Aires</h1>
-    <p>Gestão da TI | Iniciando na área de Tecnologia</p>
+<!-- MENU LATERAL -->
 
-    <h2>Sobre mim</h2>
-    <p>Estou começando minha jornada na área de TI e buscando minha primeira oportunidade.</p>
+<div id="menuLateral" class="menu-lateral">
 
-    <h2>Objetivos</h2>
-    <ul>
-        <li>Conseguir meu primeiro emprego em TI</li>
-        <li>Aprender desenvolvimento web</li>
-        <li>Ganhar experiência prática</li>
-    </ul>
+    <span class="fechar" onclick="fecharMenu()">&times;</span>
 
-    <h2>Projetos</h2>
-    <p>Meu primeiro site publicado no GitHub Pages 🚀</p>
+    <h2>📱 Sistema</h2>
 
-    <h2>Contato</h2>
-
-    <a class="botao" href="https://github.com/" target="_blank">GitHub</a>
-    <a class="botao" href="https://wa.me/5591998083544" target="_blank"> WhatsApp
-</a>
-<a class="botao" href="controle.html">📱 Abrir Sistema de Celulares</a>
+    <a href="index.html">🏠 Controle</a>
+    <a href="cadastro.html">➕ Cadastro</a>
+    <a href="historico.html">📋 Histórico</a>
+<a href="#" onclick="sair()">🚪 Sair</a>
 </div>
+
+<!-- TOPO -->
+
+<div class="topo">
+
+    <div class="menu" onclick="abrirMenu()">☰</div>
+
+    <h2>Controle</h2>
+
+    <a href="cadastro.html" class="icone">➕</a>
+
+</div>
+
+<!-- CONTEÚDO -->
+
+<div class="container">
+
+    <div class="card">
+
+        <h3>IMEI</h3>
+
+       <input
+    type="text"
+    id="imei"
+    placeholder="Digite ou bip o IMEI"
+    oninput="buscar()">
+
+        <button class="buscar" onclick="buscar()">
+            Buscar
+        </button>
+
+        <div class="info" id="info" style="display:none;">
+
+            <p><strong>Nome:</strong>
+                <span id="nome"></span>
+            </p>
+
+            <p><strong>Cargo:</strong>
+                <span id="cargo"></span>
+            </p>
+
+            <p><strong>Empresa:</strong>
+                <span id="empresa"></span>
+            </p>
+
+            <div class="btns">
+
+                <button
+                    class="entrada"
+                    onclick="registrar('ENTRADA')">
+
+                    🟢 ENTRADA
+
+                </button>
+
+                <button
+                    class="saida"
+                    onclick="registrar('SAÍDA')">
+
+                    🔴 SAÍDA
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="lista">
+
+        <h2>Últimos Registros</h2>
+
+        <div id="historico"></div>
+
+    </div>
+
+</div>
+
+<script>
+    if (localStorage.getItem("logado") !== "sim") {
+    window.location.href = "login.html";
+}
+
+let cadastroAtual = null;
+
+function abrirMenu() {
+    document.getElementById("menuLateral").style.width = "280px";
+}
+
+function fecharMenu() {
+    document.getElementById("menuLateral").style.width = "0";
+}
+
+function buscar() {
+
+    let imei = document.getElementById("imei").value;
+
+    let cadastros =
+        JSON.parse(localStorage.getItem("cadastros")) || [];
+
+    cadastroAtual =
+        cadastros.find(c => c.imei === imei);
+
+    if (!cadastroAtual) {
+
+    document.getElementById("info").style.display = "none";
+
+    return;
+}
+
+    document.getElementById("info").style.display = "block";
+
+    document.getElementById("nome").innerText =
+        cadastroAtual.nome;
+
+    document.getElementById("cargo").innerText =
+        cadastroAtual.cargo;
+
+    document.getElementById("empresa").innerText =
+        cadastroAtual.empresa;
+}
+
+function registrar(tipo) {
+
+    if (!cadastroAtual) {
+        alert("Busque um IMEI primeiro.");
+        return;
+    }
+
+    let registros =
+        JSON.parse(localStorage.getItem("registros")) || [];
+
+    registros.push({
+        tipo,
+        nome: cadastroAtual.nome,
+        empresa: cadastroAtual.empresa,
+        imei: cadastroAtual.imei,
+        hora: new Date().toLocaleString()
+    });
+
+    localStorage.setItem(
+        "registros",
+        JSON.stringify(registros)
+    );
+
+    mostrar();
+
+    alert(tipo + " registrada com sucesso.");
+}
+
+function mostrar() {
+
+    let div =
+        document.getElementById("historico");
+
+    div.innerHTML = "";
+
+    let registros =
+        JSON.parse(localStorage.getItem("registros")) || [];
+
+    registros
+        .slice()
+        .reverse()
+        .slice(0, 5)
+        .forEach(r => {
+
+            div.innerHTML += `
+
+            <div class="item">
+
+                <div class="hora">${r.hora}</div>
+
+                <strong>${r.tipo}</strong><br>
+
+                ${r.nome}<br>
+
+                ${r.empresa}<br>
+
+                IMEI: ${r.imei}
+
+            </div>
+
+            `;
+
+        });
+
+}
+
+mostrar();
+function sair() {
+
+    localStorage.removeItem("logado");
+
+    window.location.href = "login.html";
+
+}
+
+</script>
 
 </body>
 </html>
